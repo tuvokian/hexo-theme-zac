@@ -1,6 +1,6 @@
 import decompress from 'gulp-decompress';
 import { deleteAsync } from 'del';
-import download from "gulp-download-stream";
+import fetch from 'node-fetch';
 import fs from 'fs';
 import gulp from 'gulp';
 import path from 'path';
@@ -21,10 +21,17 @@ gulp.task('lib:fontAwesome',function(){
     .pipe(gulp.dest('./source/lib/font-awesome'))
 })
 
-gulp.task('lib:download_mesloFont', function () {
-  return download('https://github.com/andreberg/Meslo-Font/raw/master/dist/v1.2.1/Meslo%20LG%20v1.2.1.zip?raw=true')
-    .pipe(gulp.dest("/tmp"));
-})
+gulp.task('lib:download_mesloFont', async function () {
+  const url = 'https://github.com/andreberg/Meslo-Font/raw/master/dist/v1.2.1/Meslo%20LG%20v1.2.1.zip?raw=true';
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to download: ${res.statusText}`);
+  const fileStream = fs.createWriteStream('/tmp/Meslo LG v1.2.1.zip');
+  await new Promise((resolve, reject) => {
+    res.body.pipe(fileStream);
+    res.body.on('error', reject);
+    fileStream.on('finish', resolve);
+  });
+});
 
 gulp.task('lib:install_mesloFont', function () {
   return gulp.src('/tmp/Meslo%20LG%20v1.2.1.zip')
