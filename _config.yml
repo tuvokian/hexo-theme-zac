@@ -30,20 +30,22 @@ social_links:
     icon: github
     link: https://github.com/tuvokian
   -
-    icon: twitter
+    icon: bluesky
     label: "@zacisfound"
-    link: https://twitter.com/zacisfound
+    link: https://bsky.app/profile/zacisfound.bsky.social
 
 # Customize the overview with displaying a tagcloud on the index page.
 # Options: https://hexo.io/docs/helpers.html#tagcloud
-tags_overview: true
+tags_overview: false
 
 # Customize the overview with the most recent blog posts on the index page.
 # Options:
+#   - show_posts: whether to show recent posts.
 #   - show_all_posts: whether to show all available posts.
 #   - post_count: whether to show only the x most recent posts.
 #   - sort_updated: sort posts by last modification date instead of creation date.
 posts_overview:
+  show_posts: false
   show_all_posts: false
   post_count: 5
   sort_updated: false
