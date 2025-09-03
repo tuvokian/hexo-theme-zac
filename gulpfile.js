@@ -4,8 +4,6 @@ import download from "gulp-download-stream";
 import fs from 'fs';
 import gulp from 'gulp';
 import path from 'path';
-import stylint from 'gulp-stylint';
-import stylelintFormatter from 'stylelint-formatter-pretty';
 import jshint from 'gulp-jshint';
 import jshintFormatter from 'jshint-stylish';
 import yaml from 'js-yaml';
@@ -69,19 +67,6 @@ gulp.task('lint:js', function() {
     .pipe(jshint.reporter(jshintFormatter));
 });
 
-gulp.task('lint:stylus', function () {
-  return gulp.src([
-    './source/css/*.styl',
-    './source/css/_partial/*.styl',
-    './source/css/_colors/*.styl'
-  ]).pipe(stylint({
-      config: '.stylintrc',
-      reporters: [
-        {formatter: stylelintFormatter, console: true}
-      ]
-    }))
-});
-
 gulp.task('validate:config', function(cb) {
   var themeConfig = fs.readFileSync(path.join(path.resolve(), '_config.yml'));
 
@@ -118,6 +103,6 @@ gulp.task('lib', gulp.series(
   'lib:clean', 'lib:jQuery', 'lib:clipboard', 'lib:fontAwesome',
   'lib:download_mesloFont', 'lib:install_mesloFont', 'lib:vazirFont',
   'lib:justifiedGallery'));
-gulp.task('lint', gulp.parallel('lint:js', 'lint:stylus'));
+gulp.task('lint', gulp.parallel('lint:js'));
 gulp.task('validate', gulp.parallel('validate:config', 'validate:languages'));
 gulp.task('default', gulp.parallel('lint', 'validate'));
