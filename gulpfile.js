@@ -43,7 +43,7 @@ gulp.task('lib:download_mesloFont', async function () {
 });
 
 gulp.task('lib:install_mesloFont', function () {
-  return gulp.src(tmpZipPath)
+  return gulp.src(tmpZipPath, { encoding: false })
     .pipe(decompress({
       filter: file => path.extname(file.path) == '.ttf',
       strip: 1
