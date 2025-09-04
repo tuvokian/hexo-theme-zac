@@ -8,6 +8,8 @@ import jshint from 'gulp-jshint';
 import jshintFormatter from 'jshint-stylish';
 import yaml from 'js-yaml';
 import os from 'os';
+import ejsLint from 'ejs-lint';
+import glob from 'glob';
 
 const tmpDir = os.tmpdir();
 
@@ -81,6 +83,24 @@ gulp.task('lint:js', function() {
     .pipe(jshint.reporter(jshintFormatter));
 });
 
+gulp.task('lint:ejs', function(cb) {
+  const files = glob.sync('./layout/**/*.ejs');
+  let hasError = false;
+  files.forEach(file => {
+    const content = fs.readFileSync(file, 'utf8');
+    const error = ejsLint(content);
+    if (error) {
+      console.error(`EJS Lint Error in ${file}:`, error);
+      hasError = true;
+    }
+  });
+  if (hasError) {
+    cb(new Error('EJS linting failed.'));
+  } else {
+    cb();
+  }
+});
+
 gulp.task('validate:config', function(cb) {
   var themeConfig = fs.readFileSync(path.join(path.resolve(), '_config.yml'));
 
@@ -117,6 +137,6 @@ gulp.task('lib', gulp.series(
   'lib:clean', 'lib:jQuery', 'lib:clipboard', 'lib:fontAwesome',
   'lib:download_mesloFont', 'lib:install_mesloFont', 'lib:vazirFont',
   'lib:justifiedGallery'));
-gulp.task('lint', gulp.parallel('lint:js'));
+gulp.task('lint', gulp.parallel('lint:js', 'lint:ejs'));
 gulp.task('validate', gulp.parallel('validate:config', 'validate:languages'));
 gulp.task('default', gulp.parallel('lint', 'validate'));
