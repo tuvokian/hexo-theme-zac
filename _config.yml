@@ -40,15 +40,17 @@ tags_overview: false
 
 # Customize the overview with the most recent blog posts on the index page.
 # Options:
-#   - show_posts: whether to show recent posts.
+#   - show_posts: whether to show posts on index.
 #   - show_all_posts: whether to show all available posts.
 #   - post_count: whether to show only the x most recent posts.
 #   - sort_updated: sort posts by last modification date instead of creation date.
+#   - show_recent_months: only show posts from the last x months.
 posts_overview:
-  show_posts: false
+  show_posts: true
   show_all_posts: false
   post_count: 5
   sort_updated: false
+  show_recent_months: 6
 
 # Customize the archive view.
 # Options:

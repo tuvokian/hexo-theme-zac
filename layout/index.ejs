@@ -28,6 +28,20 @@
 </section>
 
 <% if (theme.posts_overview.show_posts) { %>
+  <% var field_sort = theme.posts_overview.sort_updated ? 'updated' : 'date'
+    if (theme.posts_overview.show_all_posts) {
+      var show_posts = page.posts.sort(field_sort, 'desc')
+    } else if (theme.posts_overview.show_recent_months) {
+      var months = theme.posts_overview.show_recent_months;
+      var threshold = new Date();
+      threshold.setMonth(threshold.getMonth() - months);
+      var show_posts = site.posts.sort(field_sort, 'desc').filter(function(post){
+        return post.date.toDate() > threshold;
+      }).limit(theme.posts_overview.post_count || 5);
+    } else {
+      var show_posts = site.posts.sort(field_sort, 'desc').limit(theme.posts_overview.post_count || 5)
+    } %>
+  <% if (show_posts && show_posts.length) { %>
 <section id="writing">
   <span class="h1"><a href="<%- url_for(theme.nav.articles) %>"><%= __('index.articles') %></a></span>
   <% if (theme.tags_overview && site.tags.length) { %>
@@ -41,6 +55,13 @@
     <% var field_sort = theme.posts_overview.sort_updated ? 'updated' : 'date' %>
     <% if (theme.posts_overview.show_all_posts) { %>
       <% var show_posts = page.posts.sort(field_sort, 'desc') %>
+    <% } else if (theme.posts_overview.show_recent_months) { %>
+      <% var months = theme.posts_overview.show_recent_months;
+    var threshold = new Date();
+    threshold.setMonth(threshold.getMonth() - months);
+    var show_posts = site.posts.sort(field_sort, 'desc').filter(function(post){
+      return post.date.toDate() > threshold;
+    }).limit(theme.posts_overview.post_count || 5); %>
     <% } else { %>
       <% var show_posts = site.posts.sort(field_sort, 'desc').limit(theme.posts_overview.post_count || 5) %>
     <% } %>
@@ -55,7 +76,8 @@
     <%- partial('_partial/pagination') %>
   <% } %>
 </section>
-<% } %>
+<% }
+ } %>
 
 <% if (site.data.projects) { %>
 <section id="projects">
