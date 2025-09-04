@@ -7,7 +7,9 @@ import path from 'path';
 import jshint from 'gulp-jshint';
 import jshintFormatter from 'jshint-stylish';
 import yaml from 'js-yaml';
+import os from 'os';
 
+const tmpDir = os.tmpdir();
 
 gulp.task('lib:clean',function(){
   return deleteAsync([ './source/lib/*' ]);
@@ -17,15 +19,20 @@ gulp.task('lib:fontAwesome',function(){
   return gulp.src([
     'node_modules/@fortawesome/fontawesome-free/webfonts/*',
     'node_modules/@fortawesome/fontawesome-free/css/all.min.css'
-  ], {base: 'node_modules/@fortawesome/fontawesome-free'})
-    .pipe(gulp.dest('./source/lib/font-awesome'))
+  ], {
+      base: 'node_modules/@fortawesome/fontawesome-free',
+      encoding: false 
+    })
+      .pipe(gulp.dest('./source/lib/font-awesome'))
 })
+
+const tmpZipPath = path.join(tmpDir, 'Meslo LG v1.2.1.zip');
 
 gulp.task('lib:download_mesloFont', async function () {
   const url = 'https://github.com/andreberg/Meslo-Font/raw/master/dist/v1.2.1/Meslo%20LG%20v1.2.1.zip?raw=true';
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to download: ${res.statusText}`);
-  const fileStream = fs.createWriteStream('/tmp/Meslo LG v1.2.1.zip');
+  const fileStream = fs.createWriteStream(tmpZipPath);
   await new Promise((resolve, reject) => {
     res.body.pipe(fileStream);
     res.body.on('error', reject);
@@ -34,7 +41,7 @@ gulp.task('lib:download_mesloFont', async function () {
 });
 
 gulp.task('lib:install_mesloFont', function () {
-  return gulp.src('/tmp/Meslo%20LG%20v1.2.1.zip')
+  return gulp.src(tmpZipPath)
     .pipe(decompress({
       filter: file => path.extname(file.path) == '.ttf',
       strip: 1
